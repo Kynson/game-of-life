@@ -1,0 +1,5 @@
+# WASM complied packages
+**/pkg
+
+# Web bundled artifacts
+**/dist

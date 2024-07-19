@@ -1,0 +1,23 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "type": "module",
+  "author": "Kynson Szetau (https://kynsonszetau.com/)",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "wasm": "file:../wasm/pkg"
+  },
+  "devDependencies": {
+    "eslint": "^9.7.0",
+    "prettier": "^3.3.3",
+    "vite": "^5.3.1",
+    "vite-plugin-wasm": "^3.3.0"
+  }
+}

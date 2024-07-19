@@ -1,0 +1,12 @@
+{
+  "name": "wasm-template",
+  "version": "0.0.0",
+  "description": "",
+  "author": "Kynson Szetau (https://kynsonszetau.com/)",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/app",
+    "packages/lint"
+  ]
+}
