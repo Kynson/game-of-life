@@ -12,7 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "wasm": "file:../wasm/pkg"
+    "kernal": "file:../kernal/pkg"
   },
   "devDependencies": {
     "eslint": "^9.7.0",

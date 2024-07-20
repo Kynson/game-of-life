@@ -1,8 +1,8 @@
 # This file is used for Cargo to discover the Rust package in packages
 
 [workspace]
-members = ["packages/wasm"]
-default-members = ["packages/wasm"]
+members = ["packages/kernal"]
+default-members = ["packages/kernal"]
 
-# Use resolver v2 so that the configuration in packages/wasm/Cargo.toml is respected
+# Use resolver v2 so that the configuration in packages/kernal/Cargo.toml is respected
 resolver = "2"
