@@ -1,17 +1,9 @@
-use wasm_bindgen::prelude::*;
+mod universe;
+mod cell_state;
+mod delta;
+mod cell_coordinates;
 
-#[wasm_bindgen]
-pub fn add(left: usize, right: usize) -> usize {
-  left + right
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn it_works() {
-    let result = add(2, 2);
-    assert_eq!(result, 4);
-  }
-}
+// Simplify the import path of the modules
+use cell_state::CellState;
+use delta::Delta;
+use cell_coordinates::CellCoordinates;
