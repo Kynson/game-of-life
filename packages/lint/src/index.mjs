@@ -18,6 +18,9 @@ function generateESLintConfigurations(rootDirectory) {
         ...tseslint.configs.stylisticTypeChecked,
         prettier,
       ],
+      rules: {
+        '@typescript-eslint/no-non-null-assertion': 'off',
+      },
       languageOptions: {
         parserOptions: {
           projectService: true,
