@@ -2,20 +2,46 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS + WASM</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+    <title>Conway's Game of Life</title>
   </head>
   <body>
-    <div id="app">
-      <div>
-        <img src="/vite.svg" alt="vite logo" class="logo" />
-        <img src="/typescript.svg" alt="typescript logo" class="logo" />
-        <img src="/wasm.svg" alt="wasm logo" class="logo" />
+    <main id="app">
+      <div id="topbar">
+        <img id="logo" src="/logo.svg" alt="logo">         
+        <div>
+          <span id="title">Conway's Game of Life &middot;</span>
+          <span class="low-emphasis">Generation </span>
+          <span id="generation-count" class="low-emphasis">0x1</span>
+        </div>
+        <div id="universe-controls-container">
+          <button id="next-generation-button" class="hidden low-emphasis">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15 6.75a.75.75 0 0 0-.75.75V18a.75.75 0 0 0 .75.75h.75a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75H15ZM20.25 6.75a.75.75 0 0 0-.75.75V18c0 .414.336.75.75.75H21a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75h-.75ZM5.055 7.06C3.805 6.347 2.25 7.25 2.25 8.69v8.122c0 1.44 1.555 2.343 2.805 1.628l7.108-4.061c1.26-.72 1.26-2.536 0-3.256L5.055 7.061Z" />
+            </svg>   
+          </button>
+          <button id="play-button" class="low-emphasis">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
+            </svg>          
+          </button>
+          <button id="pause-button" class="hidden low-emphasis">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clip-rule="evenodd" />
+            </svg>          
+          </button>
+        </div>
       </div>
-      <h1>Vite + TS + WASM</h1>
-      <p>2 + 2 = <span id="calculation-result"></span> —WASM</p>
-    </div>
+      <div id="universe-canvas-container">
+        <canvas id="universe-canvas"></canvas>
+      </div>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

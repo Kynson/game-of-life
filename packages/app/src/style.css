@@ -1,44 +1,92 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Fira Code', Inter, system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #121212;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --page-padding: 24px;
+  --topbar-height: 56px;
+
+  --low-emphasis-color: #a0a0a0;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
+  padding: 0;
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100dvh;
+  padding: var(--page-padding);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+#topbar {
+  height: var(--topbar-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+#logo {
+  width: 24px;
+  height: 24px;
+}
+
+#title {
+  display: none;
+}
+
+#universe-controls-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+#universe-controls-container > button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+#universe-canvas-container {
+  border: 1px solid color-mix(in srgb, var(--low-emphasis-color) 50%, #000);
+  border-radius: 8px;
+  margin: auto;
+  max-width: min-content;
+  max-height: min-content;
+  overflow: scroll;
+}
+
+#universe-canvas {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.low-emphasis {
+  color: var(--low-emphasis-color);
+}
+
+@media (min-width: 786px) {
+  #title {
+    display: inline;
+  }
 }
