@@ -15,7 +15,8 @@ pub struct Universe {
   // Cells are represented as indexes of a 1D-array for easier interfacing with JS
   alive_cell_indexes: HashSet<usize>,
   neighbours_x_offsets: [usize; 3],
-  neighbours_y_offsets: [usize; 3]
+  neighbours_y_offsets: [usize; 3],
+  pending_delta: Option<Delta>
 }
 
 // Rust only implementation. The following functions should not be called in JS
@@ -58,34 +59,60 @@ impl Universe {
 #[wasm_bindgen]
 impl Universe {
   #[wasm_bindgen(constructor)]
-  pub fn new(width: usize, height: usize, initial_alive_cells: Vec<usize>) -> Universe {
-    let alive_cell_indexes = HashSet::from_iter(initial_alive_cells);
+  pub fn new(width: usize, height: usize, initial_alive_cell_indexes: Vec<usize>) -> Universe {
     // Always add width/ height so that it wraps around on the edges
     let neighbours_x_offsets = [width - 1, 0, 1];
     let neighbours_y_offsets = [height - 1, 0, 1];
+    let mut pending_delta = None;
+
+    if initial_alive_cell_indexes.len() > 0 {
+      let mut delta = Delta::new();
+
+      for index in initial_alive_cell_indexes.iter() {
+        delta.add_change(*index, CellState::Alive);
+      }
+
+      pending_delta = Some(delta);
+    }
+
+    let alive_cell_indexes = HashSet::from_iter(initial_alive_cell_indexes);
 
     Universe {
       width,
       height,
       alive_cell_indexes,
       neighbours_x_offsets,
-      neighbours_y_offsets
+      neighbours_y_offsets,
+      pending_delta
     }
   }
 
   #[wasm_bindgen(js_name = toggleCell)]
   pub fn toggle_cell(&mut self, index: usize) {
+    let mut delta = Delta::new();
+
     if self.alive_cell_indexes.contains(&index) {
       self.alive_cell_indexes.remove(&index);
+      delta.add_change(index, CellState::Dead);
+    } else {
+      self.alive_cell_indexes.insert(index);
+      delta.add_change(index, CellState::Alive);
+    }
 
-      return;
-    } 
-      
-    self.alive_cell_indexes.insert(index);
+    self.pending_delta = Some(delta);
   }
 
   #[wasm_bindgen(js_name = nextGeneration)]
   pub fn next_generation(&mut self) -> Delta {
+    // Always return the pending delta for synchronization
+    // next_generation should be the source of turth for rendering, the renderer should render the change based on the result of next_generation,
+    // event if the universe's state is mutated by other means
+    if self.pending_delta.is_some() {
+      let delta = self.pending_delta.take().expect("pending delta should exist");
+
+      return delta;
+    }
+
     let mut delta = Delta::new();
     let mut new_alive_cell_indexes = self.alive_cell_indexes.clone();
 
@@ -147,16 +174,16 @@ mod tests {
 
     let universe = Universe::new(width, height, initial_alive_cells);
 
+    let mut expected_delta = Delta::new();
+    expected_delta.add_change(1, CellState::Alive);
+    expected_delta.add_change(2, CellState::Alive);
+
     assert_eq!(universe.width, width);
     assert_eq!(universe.height, height);
-    assert_eq!(universe.alive_cell_indexes, HashSet::from([1, 2]));
+    assert_eq!(universe.pending_delta, Some(expected_delta));
 
     assert_eq!(universe.neighbours_x_offsets, [9, 0, 1]);
     assert_eq!(universe.neighbours_y_offsets, [10, 0, 1]);
-
-    println!("Resulting universe:");
-    println!("{:?}", universe);
-    println!("{}", universe);
   }
 
   #[test]
@@ -215,6 +242,16 @@ mod tests {
     let initial_alive_cells = vec![7, 12, 17];
 
     let mut universe = Universe::new(width, height, initial_alive_cells.clone());
+
+    let mut expected_delta = Delta::new();
+    expected_delta.add_change(7, CellState::Alive);
+    expected_delta.add_change(12, CellState::Alive);
+    expected_delta.add_change(17, CellState::Alive);
+
+    let delta = universe.next_generation();
+    assert_eq!(delta, expected_delta);
+
+
     println!("Initial universe:");
     println!("{}", universe);
 
@@ -254,6 +291,16 @@ mod tests {
     let initial_alive_cells = vec![6, 7, 11, 12];
 
     let mut universe = Universe::new(width, height, initial_alive_cells.clone());
+
+    let mut expected_delta = Delta::new();
+    expected_delta.add_change(6, CellState::Alive);
+    expected_delta.add_change(7, CellState::Alive);
+    expected_delta.add_change(11, CellState::Alive);
+    expected_delta.add_change(12, CellState::Alive);
+
+    let delta = universe.next_generation();
+    assert_eq!(delta, expected_delta);
+
     println!("Initial universe:");
     println!("{}", universe);
 
