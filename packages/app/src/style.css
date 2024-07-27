@@ -64,6 +64,15 @@ body {
   cursor: pointer;
 }
 
+#universe-controls-container > button:active {
+  padding: 2px;
+}
+
+#universe-controls-container > button:active > svg {
+  width: 20px;
+  height: 20px;
+}
+
 #universe-canvas-container {
   border: 1px solid color-mix(in srgb, var(--low-emphasis-color) 50%, #000);
   border-radius: 8px;

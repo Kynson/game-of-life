@@ -1,8 +1,8 @@
 interface InitializePayload {
   initialAliveCellIndexes: Uint32Array;
   canvas: OffscreenCanvas;
-  availableWidth: number;
-  availableHeight: number;
+  universeWidth: number;
+  universeHeight: number;
 }
 
 interface ToggleCellPayload {
@@ -63,15 +63,15 @@ export default class UniverseRenderer extends EventTarget {
   initialize(
     initialAliveCellIndexes: Uint32Array,
     canvas: OffscreenCanvas,
-    availableWidth: number,
-    availableHeight: number,
+    universeWidth: number,
+    universeHeight: number,
   ) {
     this.worker.postMessage(
       {
         method: 'initialize',
         payload: {
-          availableWidth,
-          availableHeight,
+          universeWidth,
+          universeHeight,
           initialAliveCellIndexes,
           canvas,
         },

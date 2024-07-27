@@ -3,8 +3,7 @@ import type { Packet } from './index';
 import { Universe, CellState } from 'kernal';
 import wrapDelta from './utils/delta-wrapper';
 
-const CELL_SIZE = 8;
-const CELL_FILL = '#edae49';
+import { CELL_SIZE, CELL_FILL } from '../cell-styles';
 
 let universe: Universe;
 let universeWidth: number;
@@ -80,11 +79,7 @@ function renderUniverse(currentTimestamp: number, once: boolean) {
   });
 }
 
-function isValidInitialAliveCellIndexes(
-  indexes: Uint32Array,
-  universeWidth: number,
-  universeHeight: number,
-) {
+function isValidInitialAliveCellIndexes(indexes: Uint32Array) {
   return (
     new Set(indexes).size === indexes.length &&
     indexes.every((index) => index < universeWidth * universeHeight)
@@ -94,28 +89,23 @@ function isValidInitialAliveCellIndexes(
 function initialize(
   initialAliveCellIndexes: Uint32Array,
   canvas: OffscreenCanvas,
-  availableWidth: number,
-  availableHeight: number,
+  width: number,
+  height: number,
 ) {
   if (isInitialized) {
     return;
   }
 
-  universeWidth = Math.floor(availableWidth / CELL_SIZE);
-  universeHeight = Math.floor(availableHeight / CELL_SIZE);
+  universeWidth = width;
+  universeHeight = height;
 
+  // Check is only needed during development
   if (
-    !isValidInitialAliveCellIndexes(
-      initialAliveCellIndexes,
-      universeWidth,
-      universeHeight,
-    )
+    import.meta.env.DEV &&
+    !isValidInitialAliveCellIndexes(initialAliveCellIndexes)
   ) {
     throw new Error('invalid initialAliveCellIndexes');
   }
-
-  canvas.width = universeWidth * CELL_SIZE;
-  canvas.height = universeHeight * CELL_SIZE;
 
   universe = new Universe(
     universeWidth,
@@ -176,17 +166,13 @@ function toggleCell(x: number, y: number) {
 self.addEventListener('message', ({ data }: MessageEvent<Packet>) => {
   switch (data.method) {
     case 'initialize': {
-      const {
-        initialAliveCellIndexes,
-        canvas,
-        availableWidth,
-        availableHeight,
-      } = data.payload;
+      const { initialAliveCellIndexes, canvas, universeWidth, universeHeight } =
+        data.payload;
       initialize(
         initialAliveCellIndexes,
         canvas,
-        availableWidth,
-        availableHeight,
+        universeWidth,
+        universeHeight,
       );
 
       break;

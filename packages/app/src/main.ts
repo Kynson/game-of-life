@@ -1,6 +1,10 @@
 import './style.css';
 
 import UniverseRenderer from './universe-renderer';
+import { CELL_SIZE } from './cell-styles';
+import getRandomUniqueValues from './utils/random-unique-values';
+
+const MAX_NUMBER_OF_INITIAL_ALIVE_CELLS = 500;
 
 const universeRenderer = new UniverseRenderer();
 
@@ -76,8 +80,6 @@ function windowCoordinatesToUniverseCanvasCoordinates(x: number, y: number) {
 
 // ======== Event handlers ========
 function handleDocumentClick({ clientX, clientY }: MouseEvent) {
-  console.log(clientX, clientY);
-
   const universeCanvasCoordinates =
     windowCoordinatesToUniverseCanvasCoordinates(clientX, clientY);
 
@@ -93,17 +95,32 @@ function handleDocumentClick({ clientX, clientY }: MouseEvent) {
 function handleWorkerInitialized() {
   const { width, height } = computeAvailableSpace();
 
+  const universeWidth = Math.floor(width / CELL_SIZE);
+  const universeHeight = Math.floor(height / CELL_SIZE);
+  const numberOfCells = universeWidth * universeHeight;
+  const numberInitialAliveCells = Math.min(
+    Math.floor(numberOfCells * 0.1),
+    MAX_NUMBER_OF_INITIAL_ALIVE_CELLS,
+  );
+
+  const initialAliveCellIndexes = new Uint32Array(
+    getRandomUniqueValues(0, numberOfCells, numberInitialAliveCells),
+  );
+
+  universeCanvas.width = universeWidth * CELL_SIZE;
+  universeCanvas.height = universeHeight * CELL_SIZE;
+
   universeRenderer.initialize(
-    new Uint32Array([250, 251, 252]),
+    initialAliveCellIndexes,
     universeCanvas.transferControlToOffscreen(),
-    width,
-    height,
+    universeWidth,
+    universeHeight,
   );
 }
 
 function handleUniverseRendererTick() {
   generationCount++;
-  generationCountSpan.innerText = `0x${generationCount.toString(16)}`;
+  generationCountSpan.textContent = `0x${generationCount.toString(16)}`;
 }
 
 function handlePlayButtonClick() {
