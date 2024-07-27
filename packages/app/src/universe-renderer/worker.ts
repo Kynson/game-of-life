@@ -30,7 +30,6 @@ function cellIndexToCellCoordinates(index: number) {
 function renderCell(index: number) {
   const { x, y } = cellIndexToCellCoordinates(index);
 
-  universeCanvasContext.fillStyle = CELL_FILL;
   universeCanvasContext.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 }
 
@@ -49,6 +48,7 @@ function renderUniverse(currentTimestamp: number, once: boolean) {
     requestAnimationFrame((timestamp) => {
       renderUniverse(timestamp, once);
     });
+
     return;
   }
 
@@ -114,6 +114,8 @@ function initialize(
   );
   universeCanvas = canvas;
   universeCanvasContext = universeCanvas.getContext('2d')!;
+
+  universeCanvasContext.fillStyle = CELL_FILL;
 
   isPlaying = true;
   requestAnimationFrame((timestamp) => {

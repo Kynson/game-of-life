@@ -14,8 +14,6 @@ pub struct Universe {
   height: usize,
   // Cells are represented as indexes of a 1D-array for easier interfacing with JS
   alive_cell_indexes: HashSet<usize>,
-  neighbours_x_offsets: [usize; 3],
-  neighbours_y_offsets: [usize; 3],
   pending_delta: Option<Delta>
 }
 
@@ -34,21 +32,46 @@ impl Universe {
   fn count_alive_neighbours_of_cell(&self, coordinates: CellCoordinates) -> u8 {
     let mut number_of_neighbours = 0_u8;
 
-    for x_offset in self.neighbours_x_offsets {
-      for y_offset in self.neighbours_y_offsets {
-        if x_offset == 0 && y_offset == 0 {
-          continue;
-        }
+    // ======== Optimized code ========
+    let top = if coordinates.y == 0 { self.height - 1 } else { coordinates.y - 1 };
+    let bottom = if coordinates.y == self.height - 1 { 0 } else { coordinates.y + 1 };
+    let left = if coordinates.x == 0 { self.width - 1 } else { coordinates.x - 1 };
+    let right = if coordinates.x == self.width - 1 { 0 } else { coordinates.x + 1 };
 
-        let neighbour_coordinates = CellCoordinates::new(
-          (coordinates.x + x_offset) % self.width,
-          (coordinates.y + y_offset) % self.height,
-          self.width
-        );
+    let top_left_coordinates = CellCoordinates::new(left, top, self.width);
+    let top_center_coordinates = CellCoordinates::new(coordinates.x, top, self.width);
+    let top_right_coordinates = CellCoordinates::new(right, top, self.width);
+    let left_coordinates = CellCoordinates::new(left, coordinates.y, self.width);
+    let right_coordinates = CellCoordinates::new(right, coordinates.y, self.width);
+    let bottom_left_coordinates = CellCoordinates::new(left, bottom, self.width);
+    let bottom_center_coordinates = CellCoordinates::new(coordinates.x, bottom, self.width);
+    let bottom_right_coordinates = CellCoordinates::new(right, bottom, self.width);
 
-        number_of_neighbours += self.get_cell_state(neighbour_coordinates) as u8;
-      }
-    }
+    number_of_neighbours += self.get_cell_state(top_left_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(top_center_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(top_right_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(left_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(right_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(bottom_left_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(bottom_center_coordinates) as u8;
+    number_of_neighbours += self.get_cell_state(bottom_right_coordinates) as u8;
+
+    // ======== Original code ========
+    // for x_offset in self.neighbours_x_offsets {
+    //   for y_offset in self.neighbours_y_offsets {
+    //     if x_offset == 0 && y_offset == 0 {
+    //       continue;
+    //     }
+
+    //     let neighbour_coordinates = CellCoordinates::new(
+    //       (coordinates.x + x_offset) % self.width,
+    //       (coordinates.y + y_offset) % self.height,
+    //       self.width
+    //     );
+
+    //     number_of_neighbours += self.get_cell_state(neighbour_coordinates) as u8;
+    //   }
+    // }
     
     number_of_neighbours
   }
@@ -60,9 +83,6 @@ impl Universe {
 impl Universe {
   #[wasm_bindgen(constructor)]
   pub fn new(width: usize, height: usize, initial_alive_cell_indexes: Vec<usize>) -> Universe {
-    // Always add width/ height so that it wraps around on the edges
-    let neighbours_x_offsets = [width - 1, 0, 1];
-    let neighbours_y_offsets = [height - 1, 0, 1];
     let mut pending_delta = None;
 
     if initial_alive_cell_indexes.len() > 0 {
@@ -81,8 +101,6 @@ impl Universe {
       width,
       height,
       alive_cell_indexes,
-      neighbours_x_offsets,
-      neighbours_y_offsets,
       pending_delta
     }
   }
@@ -181,9 +199,6 @@ mod tests {
     assert_eq!(universe.width, width);
     assert_eq!(universe.height, height);
     assert_eq!(universe.pending_delta, Some(expected_delta));
-
-    assert_eq!(universe.neighbours_x_offsets, [9, 0, 1]);
-    assert_eq!(universe.neighbours_y_offsets, [10, 0, 1]);
   }
 
   #[test]
