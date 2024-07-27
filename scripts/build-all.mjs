@@ -2,7 +2,7 @@
 
 import { execFileSync } from 'node:child_process';
 
-import getCargoWorkspaceMembers from './getCargoWorkspaceMembers.mjs';
+import getCargoWorkspaceMembers from './cargo-workspace-members.mjs';
 import * as log from './log.mjs';
 
 const cargoWorkspaceMembers = await getCargoWorkspaceMembers().catch(
