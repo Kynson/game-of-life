@@ -7,5 +7,7 @@ An implemenatation of the classical simulation [Conway's Game of Life](https://e
 ## Implementation Details
 The core Rust implementation of the game uses a delta-based approach to improve rendering performance. Only changed cells' states are returned in each tick, minimizing the amount of data that needs to cross the Rust-JS boundary and eliminating the need of re-rendering the entire universe in each tick.
 
+The front end is powered by [Offscreen Canvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) and [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers). The rendering task is offloaded from the main thread so that user interactions are not blocked during rendering.
+
 ## Acknowledgement
 This project is implemented by following the [Rust WASM guide](https://rustwasm.github.io/book/game-of-life/introduction.html) with some modifications. Code licensed under [MIT](https://github.com/rustwasm/book/blob/master/LICENSE).
