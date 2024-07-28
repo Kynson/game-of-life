@@ -36,6 +36,10 @@ button {
   cursor: pointer;
 }
 
+h2 {
+  font-weight: 500;
+}
+
 #motion-warning-overlay > div {
   max-width: 80ch;
 }
