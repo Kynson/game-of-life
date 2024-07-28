@@ -11,6 +11,15 @@ const universeRenderer = new UniverseRenderer();
 let generationCount = 0;
 
 // ======== UI elements ========
+const motionWarningOverlay: HTMLDivElement = document.querySelector(
+  '#motion-warning-overlay',
+)!;
+const motionWarningDismissButton: HTMLButtonElement = document.querySelector(
+  '#motion-warning-dismiss-button',
+)!;
+const loadingOverlay: HTMLDivElement =
+  document.querySelector('#loading-overlay')!;
+
 const app: HTMLElement = document.querySelector('#app')!;
 
 const nextGenerationButton: HTMLButtonElement = document.querySelector(
@@ -116,6 +125,8 @@ function handleWorkerInitialized() {
     universeWidth,
     universeHeight,
   );
+
+  loadingOverlay.classList.add('hidden');
 }
 
 function handleUniverseRendererTick() {
@@ -143,6 +154,10 @@ function handleNextGenerationButtonClick() {
   universeRenderer.renderNextGeneration();
 }
 
+function handleMotionWarningDismissButtonClick() {
+  motionWarningOverlay.classList.add('hidden');
+}
+
 // ======== Event listeners ========
 document.documentElement.addEventListener('click', handleDocumentClick);
 
@@ -152,3 +167,8 @@ universeRenderer.addEventListener('tick', handleUniverseRendererTick);
 nextGenerationButton.addEventListener('click', handleNextGenerationButtonClick);
 playButton.addEventListener('click', handlePlayButtonClick);
 pauseButton.addEventListener('click', handlePauseButtonClick);
+
+motionWarningDismissButton.addEventListener(
+  'click',
+  handleMotionWarningDismissButtonClick,
+);

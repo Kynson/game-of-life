@@ -12,6 +12,30 @@
     <title>Conway's Game of Life</title>
   </head>
   <body>
+    <div id="loading-overlay" class="overlay">
+      <svg id="loading-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#a)">
+          <rect width="8" height="8" fill="#90caf9"></rect>
+          <rect x="8" y="8" width="8" height="8" fill="#fff"></rect>
+          <rect x="16" y="8" width="8" height="8" fill="#fff"></rect>
+          <rect y="16" width="8" height="8" fill="#fff"></rect>
+          <rect x="8" y="16" width="8" height="8" fill="#fff"></rect>
+        </g>
+        <defs>
+          <clipPath id="a">
+            <rect width="24" height="24" fill="#fff" class="logo-animation-6"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+      <p>Loading</p>
+    </div>
+    <div id="motion-warning-overlay" class="overlay">
+      <div>
+        <h2>Viewer Discretion Advised</h2>
+        <p>This page contains fast moving motions which you may find uncomfortable.<br>Please leave the page if you are concerned.</p>
+        <button id="motion-warning-dismiss-button" class="low-emphasis">I understand, plase continue -></button>
+      </div>
+    </div>
     <main id="app">
       <div id="topbar">
         <img id="logo" src="/logo.svg" alt="logo">         
