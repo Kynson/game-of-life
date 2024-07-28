@@ -88,7 +88,7 @@ function windowCoordinatesToUniverseCanvasCoordinates(x: number, y: number) {
 }
 
 // ======== Event handlers ========
-function handleDocumentClick({ clientX, clientY }: MouseEvent) {
+function handleUniverseCanvasClick({ clientX, clientY }: MouseEvent) {
   const universeCanvasCoordinates =
     windowCoordinatesToUniverseCanvasCoordinates(clientX, clientY);
 
@@ -159,7 +159,7 @@ function handleMotionWarningDismissButtonClick() {
 }
 
 // ======== Event listeners ========
-document.documentElement.addEventListener('click', handleDocumentClick);
+universeCanvas.addEventListener('click', handleUniverseCanvasClick);
 
 universeRenderer.addEventListener('workerInitialized', handleWorkerInitialized);
 universeRenderer.addEventListener('tick', handleUniverseRendererTick);
